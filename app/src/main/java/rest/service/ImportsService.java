@@ -1,13 +1,9 @@
 package rest.service;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.*;
-import rest.model.ShopUnitImportRequest;
-
-import javax.validation.Valid;
+import rest.dto.ShopUnitImportRequest;
 
 public interface ImportsService {
 
