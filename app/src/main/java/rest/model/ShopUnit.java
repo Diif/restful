@@ -1,5 +1,6 @@
 package rest.model;
 
+import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.internal.util.ZonedDateTimeComparator;
 
 import javax.persistence.*;
@@ -16,11 +17,14 @@ import java.util.UUID;
 public class ShopUnit{
     @Id
     @NotNull(message = "Id can't be null")
+    @ApiModelProperty(name = "UUID", example = "3fa85f64-5717-4562-b3fc-2c963f66a444", required = true)
     private UUID id = null;
 
     @NotBlank(message = "Name can't be blank")
+    @ApiModelProperty(name = "name", example = "Оффер", required = true)
     private String name = null;
 
+    @ApiModelProperty(name = "parent UUID", example = "3fa85f64-5717-4562-b3fc-2c963f66a333")
     private UUID parentId = null;
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Type can't be null")

@@ -1,6 +1,9 @@
 package rest.model;
 
 import java.util.Objects;
+
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
@@ -15,8 +18,10 @@ import javax.validation.constraints.*;
 
 public class Error   {
     @NotNull
+    @ApiModelProperty(name = "http code", example = "400", required = true)
     private Integer code = null;
     @NotNull
+    @ApiModelProperty(name = "error message", example = "Validation Failed", required = true)
     private String message = null;
 
     public Error code(Integer code) {
@@ -37,11 +42,6 @@ public class Error   {
         this.message = message;
         return this;
     }
-
-    /**
-     * Get message
-     * @return message
-     **/
 
     public String getMessage() {
         return message;

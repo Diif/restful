@@ -14,10 +14,7 @@ import rest.dto.ShopUnitImportRequest;
 import rest.model.ShopUnitType;
 import rest.repositories.ShopUnitImportRepository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class ImportsServiceImpl implements ImportsService {
@@ -37,46 +34,41 @@ public class ImportsServiceImpl implements ImportsService {
             throw new MethodArgumentNotValidException(null,bindingResult);
         }
 
-        checkRequest(shopUnitImportRequest,bindingResult);
+        ArrayList<ShopUnit> shopUnitsArray = mapper.map(shopUnitImportRequest);
+        checkRequest(shopUnitsArray,bindingResult);
 
 
-        repo.saveAll(shopUnitImportRequest.getItems());
+        repo.saveAll(shopUnitsArray);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    private void checkRequest(ShopUnitImportRequest shopUnitImportRequest, BindingResult bindingResult) throws MethodArgumentNotValidException {
-        ArrayList<ShopUnit> shopUnitsArray = mapper.map(shopUnitImportRequest);
-        HashMap<UUID, ShopUnitImport> unitsMap = new HashMap<>();
-        for(ShopUnitImport unit : shopUnitImportRequest.getItems()){
-            UUID unitId = unit.getId();
-            UUID parentId = unit.getParentId();
-            //TODO вместо обращений в базу передать в БД, в БД поставить ограничения на поля (constrains читать), или ЛУЧШЕ выборку запросом сделать
-            //TODO одним обращением вытаскивать для минимизации нагрузки на БД, далее беком обрабатывать через два метода,
-            //TODO много мелких запросов = смерть из-за создания кучи TCP соединений
-            Optional<ShopUnitImport> databaseUnit =  repo.findById(unitId);
-            Optional<ShopUnitImport> databaseParent =  repo.findById(parentId);
-            if(databaseUnit.isPresent()){
-                // forbid unit type change
-                if(databaseUnit.get().getType() != unit.getType()){
-                    throw new MethodArgumentNotValidException(null,bindingResult);
-                }
-            }
-            // only category can be a parent
-            if(databaseParent.isPresent() && databaseParent.get().getType() != ShopUnitType.CATEGORY){
-                throw new MethodArgumentNotValidException(null,bindingResult);
-            }
+    private void checkRequest(ArrayList<ShopUnit> shopUnitsArray, BindingResult bindingResult) throws MethodArgumentNotValidException {
+
+
+        HashMap<UUID, ShopUnit> unitsHashMap = new HashMap<>();
+        HashSet<UUID> parentUUIDSet = new HashSet<>();
+
+        for(ShopUnit unit : shopUnitsArray){
             // only 1 uniq id per POST
-            if(unitsMap.get(unitId) != null){
+            UUID unitId = unit.getId();
+            if(unitsHashMap.get(unitId) != null){
                 throw new MethodArgumentNotValidException(null,bindingResult);
             }
+
             checkUnitPrice(unit,bindingResult);
-            unitsMap.put(unitId, unit);
+
+            parentUUIDSet.add(unit.getParentId());
+            unitsHashMap.put(unitId, unit);
         }
-        // only category can be a parent (check units in array only)
-        checkParentCorrectnessInRequestArray(shopUnitImportRequest,unitsMap,bindingResult);
+        // only category can be a parent
+        checkParentCorrectnessInRequestArray(shopUnitsArray,unitsHashMap,bindingResult);
+        checkParentCorrectnessInDataBase(parentUUIDSet, bindingResult);
+
+        //forbid type changing
+        checkTypeChange(unitsHashMap,bindingResult);
     }
 
-    private void checkUnitPrice(ShopUnitImport unit, BindingResult bindingResult) throws MethodArgumentNotValidException {
+    private void checkUnitPrice(ShopUnit unit, BindingResult bindingResult) throws MethodArgumentNotValidException {
         if(unit.getType() == ShopUnitType.OFFER){
             if(unit.getPrice() == null){
                 throw new MethodArgumentNotValidException(null,bindingResult);
@@ -88,9 +80,28 @@ public class ImportsServiceImpl implements ImportsService {
         }
     }
 
-    private void checkParentCorrectnessInRequestArray(ShopUnitImportRequest shopUnitImportRequest,HashMap<UUID, ShopUnitImport> unitsMap, BindingResult bindingResult) throws MethodArgumentNotValidException {
-        for(ShopUnitImport unit : shopUnitImportRequest.getItems()){
-            ShopUnitImport parent = unitsMap.get(unit.getParentId());
+    private void checkTypeChange(HashMap<UUID, ShopUnit> unitHashMap, BindingResult bindingResult) throws MethodArgumentNotValidException {
+        Iterable<ShopUnit> updatable = repo.findAllById(unitHashMap.keySet());
+        for (ShopUnit oldUnit : updatable){
+            ShopUnit newUnit = unitHashMap.get(oldUnit.getId());
+            if(oldUnit.getType() != newUnit.getType()){
+                throw new MethodArgumentNotValidException(null,bindingResult);
+            }
+        }
+    }
+
+    private void checkParentCorrectnessInDataBase(HashSet<UUID> parentUUIDSet, BindingResult bindingResult) throws MethodArgumentNotValidException {
+        Iterable<ShopUnit> parents = repo.findAllById(parentUUIDSet);
+        for(ShopUnit parent : parents){
+            if(parent.getType() == ShopUnitType.CATEGORY){
+                throw new MethodArgumentNotValidException(null,bindingResult);
+            }
+        }
+    }
+
+    private void checkParentCorrectnessInRequestArray(ArrayList<ShopUnit> shopUnits,HashMap<UUID, ShopUnit> unitsMap, BindingResult bindingResult) throws MethodArgumentNotValidException {
+        for(ShopUnit unit : shopUnits){
+            ShopUnit parent = unitsMap.get(unit.getParentId());
             if(parent != null && parent.getType() == ShopUnitType.OFFER){
                 throw new MethodArgumentNotValidException(null,bindingResult);
             }
