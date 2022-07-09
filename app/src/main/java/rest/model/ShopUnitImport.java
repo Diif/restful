@@ -11,11 +11,7 @@ import javax.validation.constraints.PositiveOrZero;
 import java.lang.annotation.Inherited;
 import java.util.Objects;
 import java.util.UUID;
-
-@Entity
-@Table(name="shop_unit_import")
 public class ShopUnitImport {
-  @Id
   @NotNull(message = "Id can't be null")
   @ApiModelProperty(name = "UUID", example = "3fa85f64-5717-4562-b3fc-2c963f66a444", required = true)
   private UUID id = null;

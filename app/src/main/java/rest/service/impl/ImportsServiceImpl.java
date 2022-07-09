@@ -93,7 +93,7 @@ public class ImportsServiceImpl implements ImportsService {
     private void checkParentCorrectnessInDataBase(HashSet<UUID> parentUUIDSet, BindingResult bindingResult) throws MethodArgumentNotValidException {
         Iterable<ShopUnit> parents = repo.findAllById(parentUUIDSet);
         for(ShopUnit parent : parents){
-            if(parent.getType() == ShopUnitType.CATEGORY){
+            if(parent.getType() == ShopUnitType.OFFER){
                 throw new MethodArgumentNotValidException(null,bindingResult);
             }
         }
