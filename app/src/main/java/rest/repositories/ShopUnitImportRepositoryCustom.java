@@ -12,25 +12,21 @@ import java.util.UUID;
 public interface ShopUnitImportRepositoryCustom {
     @Query(value = """
                 WITH RECURSIVE generation AS (
-                    SELECT id,
-                        name,
-                        parent_id,
+                    SELECT *,
                         0 AS generation_number
                     FROM shop_unit
                     WHERE id = ?
                 \s
                 UNION ALL
                 \s
-                    SELECT child.id,
-                        child.name,
-                        child.parent_id,
+                    SELECT child.*,
                         generation_number+1 AS generation_number
                     FROM shop_unit child
                     JOIN generation g
                       ON g.id = child.parent_id
                 )
                 \s
-                SELECT id, name
+                SELECT id,name,parent_id,price,type,update_date
                 FROM generation;""", nativeQuery = true)
     List<ShopUnit> getParentWithChildren(UUID id);
 }
