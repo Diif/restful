@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rest.model.ShopUnitImport;
 import rest.model.ShopUnitType;
-import rest.repositories.ShopUnitImportRepository;
 
 
 import javax.validation.Valid;

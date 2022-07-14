@@ -9,20 +9,19 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import rest.dto.ShopUnitRequestMapper;
 import rest.model.ShopUnit;
 import rest.service.ImportsService;
-import rest.model.ShopUnitImport;
 import rest.dto.ShopUnitImportRequest;
 import rest.model.ShopUnitType;
-import rest.repositories.ShopUnitImportRepository;
+import rest.repositories.ShopUnitRepository;
 
 import java.util.*;
 
 @Service
 public class ImportsServiceImpl implements ImportsService {
-    private final ShopUnitImportRepository repo;
+    private final ShopUnitRepository shopUnitRepository;
     private final ShopUnitRequestMapper mapper;
     @Autowired
-    public ImportsServiceImpl(ShopUnitImportRepository repo, ShopUnitRequestMapper mapper) {
-        this.repo = repo;
+    public ImportsServiceImpl(ShopUnitRepository shopUnitRepository, ShopUnitRequestMapper mapper) {
+        this.shopUnitRepository = shopUnitRepository;
         this.mapper = mapper;
     }
 
@@ -37,8 +36,10 @@ public class ImportsServiceImpl implements ImportsService {
         ArrayList<ShopUnit> shopUnitsArray = mapper.map(shopUnitImportRequest);
         checkRequest(shopUnitsArray,bindingResult);
 
-
-        repo.saveAll(shopUnitsArray);
+        shopUnitRepository.saveAll(shopUnitsArray);
+        //TODO нужно обновлять родителей, родителей родителей и т.д. При этом менять средний прайс для категорий.
+        //TODO полагаю, есть смысл написать запрос для перерасчета цены категории (чтобы при этом цена родителя тоже обновилась!)
+        //TODO используя столбец generation, можно пойти снизу вверх.
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -81,7 +82,7 @@ public class ImportsServiceImpl implements ImportsService {
     }
 
     private void checkTypeChange(HashMap<UUID, ShopUnit> unitHashMap, BindingResult bindingResult) throws MethodArgumentNotValidException {
-        Iterable<ShopUnit> updatable = repo.findAllById(unitHashMap.keySet());
+        Iterable<ShopUnit> updatable = shopUnitRepository.findAllById(unitHashMap.keySet());
         for (ShopUnit oldUnit : updatable){
             ShopUnit newUnit = unitHashMap.get(oldUnit.getId());
             if(oldUnit.getType() != newUnit.getType()){
@@ -91,7 +92,7 @@ public class ImportsServiceImpl implements ImportsService {
     }
 
     private void checkParentCorrectnessInDataBase(HashSet<UUID> parentUUIDSet, BindingResult bindingResult) throws MethodArgumentNotValidException {
-        Iterable<ShopUnit> parents = repo.findAllById(parentUUIDSet);
+        Iterable<ShopUnit> parents = shopUnitRepository.findAllById(parentUUIDSet);
         for(ShopUnit parent : parents){
             if(parent.getType() == ShopUnitType.OFFER){
                 throw new MethodArgumentNotValidException(null,bindingResult);
@@ -107,5 +108,12 @@ public class ImportsServiceImpl implements ImportsService {
             }
         }
     }
+
+//    private void recalculateAveragePrices(HashMap<UUID, ShopUnit> unitsHashMap, Set<UUID> unitsUUIDs){
+//        Iterable<MetaInfoCategory> metaInfoCategories = metaInfoCategoryRepository.findAllById(unitsUUIDs);
+//        metaInfoCategories.
+//    }
+//
+//    private void recalculate
 
 }

@@ -31,7 +31,7 @@ public class ImportsServiceController {
     public ImportsServiceController(ImportsService service) {
         this.delegate = service;
     }
-
+//TODO убрать жирный док
     @ApiOperation("Add or update products/categories")
     @Operation(summary = "", description = "Импортирует новые товары и/или категории. Товары/категории импортированные повторно обновляют текущие. Изменение типа элемента с товара на категорию или с категории на товар не допускается. Порядок элементов в запросе является произвольным.<ul>" +
             "<li>uuid товара или категории является уникальным среди товаров и категорий</li>" +
@@ -45,6 +45,7 @@ public class ImportsServiceController {
             "<li>в одном запросе не может быть двух элементов с одинаковым id</li>" +
             "<li>дата должна обрабатываться согласно ISO 8601 (такой придерживается OpenAPI). Если дата не удовлетворяет данному формату, необходимо отвечать 400.</li></ul>" +
             "Гарантируется, что во входных данных нет циклических зависимостей и поле updateDate монотонно возрастает. Гарантируется, что при проверке передаваемое время кратно секундам. ", tags={ "Базовые задачи" })
+    //TODO коды поменять на htttStatus.OK...
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Вставка или обновление прошли успешно."),
             @ApiResponse(responseCode = "400", description = "Невалидная схема документа или данные не верны", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Error.class)))

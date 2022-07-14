@@ -12,6 +12,7 @@ import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
+//TODO смешивать товары и категории - плохая идея. Для dto норм, для DB нужно разнести
 @Entity
 @Table(name = "shop_unit")
 public class ShopUnit{
