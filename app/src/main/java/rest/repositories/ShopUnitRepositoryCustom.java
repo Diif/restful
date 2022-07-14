@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Repository
 //TODO убрать хард-код, имени таблицы shop_unit не должно быть
-public interface ShopUnitImportRepositoryCustom {
+public interface ShopUnitRepositoryCustom {
     @Query(value = """
                 WITH RECURSIVE generation AS (
                     SELECT *,
@@ -29,7 +29,13 @@ public interface ShopUnitImportRepositoryCustom {
                 SELECT id,name,parent_id,price,type,update_date
                 FROM generation;"""
             , nativeQuery = true)
-    List<ShopUnit> getParentWithChildren(UUID id);
+    List<ShopUnit> getParentWithAllGenerations(UUID id);
+
+    @Query(value = """
+                SELECT * FROM shop_unit
+                WHERE parent_id = ?1 OR id = ?1"""
+            , nativeQuery = true)
+    List<ShopUnit> getParentWithFirstGeneration(UUID id);
 
     @Query(value = """
                 WITH RECURSIVE generation AS (
@@ -48,7 +54,7 @@ public interface ShopUnitImportRepositoryCustom {
                 )
                 \s
                 SELECT id
-                FROM generation;"""
+                FROM generation"""
             , nativeQuery = true)
-    List<UUID> getUUIDsParentWithChildren(UUID id);
+    List<UUID> getUUIDsParentWithAllGenerations(UUID id);
 }

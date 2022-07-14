@@ -5,6 +5,7 @@ import io.swagger.annotations.Api;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import rest.model.Error;
+import rest.model.ShopUnitWithChildren;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
@@ -18,7 +19,8 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .additionalModels(
                         typeResolver.resolve(Void.class),
-                        typeResolver.resolve(Error.class)
+                        typeResolver.resolve(Error.class),
+                        typeResolver.resolve(ShopUnitWithChildren.class)
                 )
                 .useDefaultResponseMessages(false)
                 .ignoredParameterTypes(Void.class)
