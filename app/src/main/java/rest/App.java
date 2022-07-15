@@ -3,21 +3,8 @@
  */
 package rest;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationContextFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import rest.model.ShopUnitImport;
-import rest.model.ShopUnitType;
-
-
-import javax.validation.Valid;
-import java.net.http.HttpResponse;
-import java.util.Optional;
-import java.util.UUID;
 
 @SpringBootApplication
 public class App {

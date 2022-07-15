@@ -2,7 +2,7 @@ package rest.repositories;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import rest.model.ShopUnit;
+import rest.model.entities.ShopUnit;
 
 import java.util.List;
 import java.util.UUID;

@@ -1,9 +1,8 @@
-package rest.model;
+package rest.model.entities;
 
 import java.util.Objects;
 
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;

@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import rest.model.Error;
+import rest.model.entities.Error;
 import rest.service.ImportsService;
-import rest.dto.ShopUnitImportRequest;
+import rest.model.dto.ShopUnitImportRequest;
 
 import javax.validation.Valid;
 

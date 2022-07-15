@@ -1,6 +1,6 @@
-package rest.dto;
+package rest.model.dto;
 
-import rest.model.ShopUnitImport;
+import rest.model.entities.ShopUnitImport;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;

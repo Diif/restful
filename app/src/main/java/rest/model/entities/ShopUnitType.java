@@ -1,4 +1,4 @@
-package rest.model;
+package rest.model.entities;
 
 public enum ShopUnitType {
     OFFER("OFFER"),

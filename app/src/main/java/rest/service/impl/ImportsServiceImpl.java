@@ -6,11 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import rest.dto.ShopUnitRequestMapper;
-import rest.model.ShopUnit;
+import rest.model.dto.ShopUnitRequestMapper;
+import rest.model.entities.ShopUnit;
 import rest.service.ImportsService;
-import rest.dto.ShopUnitImportRequest;
-import rest.model.ShopUnitType;
+import rest.model.dto.ShopUnitImportRequest;
+import rest.model.entities.ShopUnitType;
 import rest.repositories.ShopUnitRepository;
 
 import java.util.*;

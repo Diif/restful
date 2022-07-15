@@ -1,22 +1,18 @@
-package rest.model;
+package rest.model.entities;
 
 import io.swagger.annotations.ApiModelProperty;
-import org.hibernate.internal.util.ZonedDateTimeComparator;
 
-import javax.persistence.*;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
 
-//TODO смешивать товары и категории - плохая идея. Для dto норм, для DB нужно разнести
-@Entity
-@Table(name = "shop_unit")
-public class ShopUnit{
-    @Id
+public class ShopUnitWithChildren {
     @NotNull(message = "Id can't be null")
     @ApiModelProperty(name = "UUID", example = "3fa85f64-5717-4562-b3fc-2c963f66a444", required = true)
     private UUID id = null;
@@ -37,10 +33,13 @@ public class ShopUnit{
     @NotNull
     private ZonedDateTime updateDate = null;
 
-    public ShopUnit(){}
+    @ApiModelProperty(name = "category children array", example = "3fa85f64-5717-4562-b3fc-2c963f66a333")
+    private ArrayList<ShopUnit> children;
+
+    public ShopUnitWithChildren(){}
 
 
-    public ShopUnit id(UUID id) {
+    public ShopUnitWithChildren id(UUID id) {
         this.id = id;
         return this;
     }
@@ -53,7 +52,7 @@ public class ShopUnit{
         this.id = id;
     }
 
-    public ShopUnit name(String name) {
+    public ShopUnitWithChildren name(String name) {
         this.name = name;
         return this;
     }
@@ -66,7 +65,7 @@ public class ShopUnit{
         this.name = name;
     }
 
-    public ShopUnit parentId(UUID parentId) {
+    public ShopUnitWithChildren parentId(UUID parentId) {
         this.parentId = parentId;
         return this;
     }
@@ -79,7 +78,7 @@ public class ShopUnit{
         this.parentId = parentId;
     }
 
-    public ShopUnit type(ShopUnitType type) {
+    public ShopUnitWithChildren type(ShopUnitType type) {
         this.type = type;
         return this;
     }
@@ -92,7 +91,7 @@ public class ShopUnit{
         this.type = type;
     }
 
-    public ShopUnit price(Long price) {
+    public ShopUnitWithChildren price(Long price) {
         this.price = price;
         return this;
     }
@@ -105,7 +104,7 @@ public class ShopUnit{
         this.price = price;
     }
 
-    public ShopUnit updateDate(ZonedDateTime updateDate) {
+    public ShopUnitWithChildren updateDate(ZonedDateTime updateDate) {
         this.updateDate = updateDate;
         return this;
     }
@@ -118,6 +117,22 @@ public class ShopUnit{
         this.updateDate = updateDate;
     }
 
+    public ArrayList<ShopUnit> getChildren() {
+        return children;
+    }
+
+    public void setChildren(ArrayList<ShopUnit> children) {
+        this.children = children;
+    }
+
+    public void children(ArrayList<ShopUnit> children){
+        this.children = children;
+    }
+
+    public void addChildren(ShopUnit unit){
+        children.add(unit);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -126,7 +141,7 @@ public class ShopUnit{
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ShopUnit ShopUnit = (ShopUnit) o;
+        ShopUnitWithChildren ShopUnit = (ShopUnitWithChildren) o;
         return Objects.equals(this.id, ShopUnit.id) &&
                 Objects.equals(this.name, ShopUnit.name) &&
                 Objects.equals(this.parentId, ShopUnit.parentId) &&
@@ -143,7 +158,7 @@ public class ShopUnit{
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("class ShopUnit {\n");
+        sb.append("class ShopUnitWithChildren {\n");
 
         sb.append("    id: ").append(toIndentedString(id)).append("\n");
         sb.append("    name: ").append(toIndentedString(name)).append("\n");

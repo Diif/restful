@@ -1,8 +1,8 @@
-package rest.dto;
+package rest.model.dto;
 
 import org.springframework.stereotype.Component;
-import rest.model.ShopUnit;
-import rest.model.ShopUnitImport;
+import rest.model.entities.ShopUnit;
+import rest.model.entities.ShopUnitImport;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;

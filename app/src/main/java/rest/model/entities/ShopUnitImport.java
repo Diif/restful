@@ -1,14 +1,11 @@
-package rest.model;
+package rest.model.entities;
 
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.*;
-import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
-import java.lang.annotation.Inherited;
 import java.util.Objects;
 import java.util.UUID;
 
