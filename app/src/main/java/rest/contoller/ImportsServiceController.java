@@ -23,6 +23,8 @@ import rest.dto.ShopUnitImportRequest;
 
 import javax.validation.Valid;
 
+import static rest.config.CustomUtilities.*;
+
 @Api
 @RestController
 public class ImportsServiceController {
@@ -31,24 +33,13 @@ public class ImportsServiceController {
     public ImportsServiceController(ImportsService service) {
         this.delegate = service;
     }
-//TODO убрать жирный док
+
     @ApiOperation("Add or update products/categories")
-    @Operation(summary = "", description = "Импортирует новые товары и/или категории. Товары/категории импортированные повторно обновляют текущие. Изменение типа элемента с товара на категорию или с категории на товар не допускается. Порядок элементов в запросе является произвольным.<ul>" +
-            "<li>uuid товара или категории является уникальным среди товаров и категорий</li>" +
-            "<li>родителем товара или категории может быть только категория</li>" +
-            "<li>принадлежность к категории определяется полем parentId</li>" +
-            "<li>товар или категория могут не иметь родителя (при обновлении parentId на null, элемент остается без родителя)</li>" +
-            "<li>название элемента не может быть null   - у категорий поле price должно содержать null</li>" +
-            "<li>цена товара не может быть null и должна быть больше либо равна нулю.</li>" +
-            "<li>при обновлении товара/категории обновленными считаются **все** их параметры</li>" +
-            "<li>при обновлении параметров элемента обязательно обновляется поле **date** в соответствии с временем обновления</li>" +
-            "<li>в одном запросе не может быть двух элементов с одинаковым id</li>" +
-            "<li>дата должна обрабатываться согласно ISO 8601 (такой придерживается OpenAPI). Если дата не удовлетворяет данному формату, необходимо отвечать 400.</li></ul>" +
-            "Гарантируется, что во входных данных нет циклических зависимостей и поле updateDate монотонно возрастает. Гарантируется, что при проверке передаваемое время кратно секундам. ", tags={ "Базовые задачи" })
-    //TODO коды поменять на htttStatus.OK...
+    @Operation(summary = "", description = "Импортирует новые товары и/или категории. Товары/категории импортированные повторно обновляют текущие. Изменение типа элемента с товара на категорию или с категории на товар не допускается.", tags={ "Базовые задачи" })
+    //TODO коды поменять на htttStatus.O1K...
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Вставка или обновление прошли успешно."),
-            @ApiResponse(responseCode = "400", description = "Невалидная схема документа или данные не верны", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Error.class)))
+            @ApiResponse(responseCode = HTTP_OK, description = "Вставка или обновление прошли успешно."),
+            @ApiResponse(responseCode = HTTP_BAD_REQUEST, description = "Невалидная схема документа или данные не верны", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Error.class)))
     })
     @PostMapping(value = "/imports", produces = "application/json", consumes = "application/json")
     // BUG https://github.com/springfox/springfox/issues/3476
@@ -56,6 +47,7 @@ public class ImportsServiceController {
     @ResponseStatus(HttpStatus.OK)
     public void importsPost(@ApiParam("ShopUnitImport array with time and date") @Valid @RequestBody ShopUnitImportRequest shopUnitImportRequest, BindingResult bindingResult) throws MethodArgumentNotValidException{
 //        return delegate.importsPost(shopUnitImportRequest,bindingResult);
+        String test = String.valueOf(HttpStatus.OK.value());
         delegate.importsPost(shopUnitImportRequest,bindingResult);
     }
 }
