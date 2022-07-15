@@ -17,6 +17,8 @@ import rest.model.entities.ShopUnitWithChildren;
 import rest.model.exceptions.NotFoundException;
 import rest.service.NodesService;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.UUID;
 
 //TODO товары подкатегорий и т.д., оказывается, тоже нужно выводить - добавить.
@@ -38,7 +40,7 @@ public class NodesServiceController {
             @ApiResponse(responseCode = "404", description = "Категория/товар не найден.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Error.class )))
     })
     @GetMapping(value = "/nodes/{id}", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<ShopUnitWithChildren> nodesGet(@ApiParam(name = "Id товара/категории.") @PathVariable (name = "id")UUID id) throws NotFoundException {
+    public ResponseEntity<ShopUnitWithChildren> nodesGet(@ApiParam(name = "Id товара/категории.") @PathVariable(name = "id") @Valid @NotBlank UUID id) throws NotFoundException {
         return delegate.nodesGet(id);
     }
 }
