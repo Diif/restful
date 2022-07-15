@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import rest.model.entities.Error;
-import rest.model.exception.NotFoundException;
+import rest.model.exceptions.IncompatibleDataException;
+import rest.model.exceptions.NotFoundException;
 
 @RestControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
@@ -39,5 +40,10 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({NotFoundException.class})
     protected ResponseEntity<Object> handleNotFound(){
         return new ResponseEntity<>(new Error().code(404).message("Item not found"),HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({IncompatibleDataException.class})
+    protected ResponseEntity<Object> handleIncompatible(Exception exception){
+        return new ResponseEntity<>(new Error().code(404).message(exception.getMessage()),HttpStatus.NOT_FOUND);
     }
 }

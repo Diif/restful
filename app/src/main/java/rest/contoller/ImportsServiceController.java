@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import rest.model.entities.Error;
+import rest.model.exceptions.IncompatibleDataException;
 import rest.service.ImportsService;
 import rest.model.dto.ShopUnitImportRequest;
 
@@ -36,7 +37,6 @@ public class ImportsServiceController {
 
     @ApiOperation("Add or update products/categories")
     @Operation(summary = "", description = "Импортирует новые товары и/или категории. Товары/категории импортированные повторно обновляют текущие. Изменение типа элемента с товара на категорию или с категории на товар не допускается.", tags={ "Базовые задачи" })
-    //TODO коды поменять на htttStatus.O1K...
     @ApiResponses(value = {
             @ApiResponse(responseCode = HTTP_OK, description = "Вставка или обновление прошли успешно."),
             @ApiResponse(responseCode = HTTP_BAD_REQUEST, description = "Невалидная схема документа или данные не верны", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Error.class)))
@@ -45,9 +45,8 @@ public class ImportsServiceController {
     // BUG https://github.com/springfox/springfox/issues/3476
     // Return type must be: ResponseEntity<Void>
     @ResponseStatus(HttpStatus.OK)
-    public void importsPost(@ApiParam("ShopUnitImport array with time and date") @Valid @RequestBody ShopUnitImportRequest shopUnitImportRequest, BindingResult bindingResult) throws MethodArgumentNotValidException{
+    public void importsPost(@ApiParam("ShopUnitImport array with time and date") @Valid @RequestBody ShopUnitImportRequest shopUnitImportRequest, BindingResult bindingResult) throws MethodArgumentNotValidException, IncompatibleDataException {
 //        return delegate.importsPost(shopUnitImportRequest,bindingResult);
-        String test = String.valueOf(HttpStatus.OK.value());
         delegate.importsPost(shopUnitImportRequest,bindingResult);
     }
 }

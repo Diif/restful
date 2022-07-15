@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import rest.model.entities.ShopUnit;
 import rest.model.entities.ShopUnitType;
 import rest.model.entities.ShopUnitWithChildren;
-import rest.model.exception.NotFoundException;
+import rest.model.exceptions.NotFoundException;
 import rest.repositories.ShopUnitRepository;
 import rest.service.NodesService;
 

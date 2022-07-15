@@ -2,7 +2,7 @@ package rest.service;
 
 import org.springframework.http.ResponseEntity;
 import rest.model.entities.ShopUnitWithChildren;
-import rest.model.exception.NotFoundException;
+import rest.model.exceptions.NotFoundException;
 
 import java.util.UUID;
 

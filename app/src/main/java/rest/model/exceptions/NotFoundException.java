@@ -1,4 +1,4 @@
-package rest.model.exception;
+package rest.model.exceptions;
 
 import java.util.UUID;
 

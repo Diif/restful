@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import rest.model.entities.Error;
 import rest.model.entities.ShopUnitWithChildren;
-import rest.model.exception.NotFoundException;
+import rest.model.exceptions.NotFoundException;
 import rest.service.NodesService;
 
 import java.util.UUID;

@@ -8,6 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import rest.model.dto.ShopUnitRequestMapper;
 import rest.model.entities.ShopUnit;
+import rest.model.exceptions.IncompatibleDataException;
 import rest.service.ImportsService;
 import rest.model.dto.ShopUnitImportRequest;
 import rest.model.entities.ShopUnitType;
@@ -26,7 +27,7 @@ public class ImportsServiceImpl implements ImportsService {
     }
 
     //TODO сделать так чтобы не полностью отваливался запрос
-    public ResponseEntity<Void> importsPost(ShopUnitImportRequest shopUnitImportRequest, BindingResult bindingResult) throws MethodArgumentNotValidException {
+    public ResponseEntity<Void> importsPost(ShopUnitImportRequest shopUnitImportRequest, BindingResult bindingResult) throws MethodArgumentNotValidException, IncompatibleDataException {
 
         if(bindingResult.hasErrors())
         {
@@ -43,7 +44,7 @@ public class ImportsServiceImpl implements ImportsService {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    private void checkRequest(ArrayList<ShopUnit> shopUnitsArray, BindingResult bindingResult) throws MethodArgumentNotValidException {
+    private void checkRequest(ArrayList<ShopUnit> shopUnitsArray, BindingResult bindingResult) throws MethodArgumentNotValidException, IncompatibleDataException {
 
 
         HashMap<UUID, ShopUnit> unitsHashMap = new HashMap<>();
@@ -91,11 +92,14 @@ public class ImportsServiceImpl implements ImportsService {
         }
     }
 
-    private void checkParentCorrectnessInDataBase(HashSet<UUID> parentUUIDSet, BindingResult bindingResult) throws MethodArgumentNotValidException {
+    private void checkParentCorrectnessInDataBase(HashSet<UUID> parentUUIDSet, BindingResult bindingResult) throws IncompatibleDataException {
         Iterable<ShopUnit> parents = shopUnitRepository.findAllById(parentUUIDSet);
         for(ShopUnit parent : parents){
             if(parent.getType() == ShopUnitType.OFFER){
-                throw new MethodArgumentNotValidException(null,bindingResult);
+                StringBuilder builder = new StringBuilder("Сущность из базы данных с Id: '");
+                builder.append(parent.getParentId().toString());
+                builder.append("' не совместима с запросом.");
+                throw new IncompatibleDataException(builder.toString());
             }
         }
     }
