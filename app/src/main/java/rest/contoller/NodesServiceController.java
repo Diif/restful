@@ -32,7 +32,6 @@ public class NodesServiceController {
     @ApiOperation("Get offer/category info")
     @Operation(summary = "", description = "Получает данные о товаре/категории по id. В случае категории также предоставляет список дочерних элементов."
     ,tags = "Базовые задачи")
-    //TODO для 404 добавить пример с другим сообщением.
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",description = "Информация об элементе.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ShopUnitWithChildren.class))),
             @ApiResponse(responseCode = "400", description = "Невалидная схема документа или входные данные не верны.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Error.class))),

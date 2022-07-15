@@ -1,5 +1,6 @@
 package rest.repositories;
 
+import org.hibernate.annotations.Type;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import rest.model.entities.ShopUnit;
@@ -7,21 +8,23 @@ import rest.model.entities.ShopUnit;
 import java.util.List;
 import java.util.UUID;
 
+import static rest.config.CustomUtilities.TABLE_NAME;
+
 @Repository
-//TODO убрать хард-код, имени таблицы shop_unit не должно быть
 public interface ShopUnitRepositoryCustom {
     @Query(value = """
                 WITH RECURSIVE generation AS (
                     SELECT *,
                         0 AS generation_number
-                    FROM shop_unit
-                    WHERE id = ?
+                    FROM\040""" + TABLE_NAME + """
+                    \nWHERE id = ?
                 \s
                 UNION ALL
                 \s
                     SELECT child.*,
                         generation_number+1 AS generation_number
-                    FROM shop_unit child
+                    FROM\040""" + TABLE_NAME + """
+                     \nchild
                     JOIN generation g
                       ON g.id = child.parent_id
                 )
@@ -32,8 +35,8 @@ public interface ShopUnitRepositoryCustom {
     List<ShopUnit> getParentWithAllGenerations(UUID id);
 
     @Query(value = """
-                SELECT * FROM shop_unit
-                WHERE parent_id = ?1 OR id = ?1"""
+                SELECT * FROM\040""" + TABLE_NAME + """
+                \nWHERE parent_id = ?1 OR id = ?1"""
             , nativeQuery = true)
     List<ShopUnit> getParentWithFirstGeneration(UUID id);
 
@@ -41,19 +44,20 @@ public interface ShopUnitRepositoryCustom {
                 WITH RECURSIVE generation AS (
                     SELECT *,
                         0 AS generation_number
-                    FROM shop_unit
-                    WHERE id = ?
+                    FROM\040""" + TABLE_NAME + """
+                    \nWHERE id = ?
                 \s
                 UNION ALL
                 \s
                     SELECT child.*,
                         generation_number+1 AS generation_number
-                    FROM shop_unit child
+                    FROM\040""" + TABLE_NAME + """
+                 child
                     JOIN generation g
                       ON g.id = child.parent_id
                 )
                 \s
-                SELECT id
+                SELECT Cast(id as varchar)
                 FROM generation"""
             , nativeQuery = true)
     List<UUID> getUUIDsParentWithAllGenerations(UUID id);
