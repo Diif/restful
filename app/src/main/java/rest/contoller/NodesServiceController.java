@@ -4,10 +4,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +29,7 @@ import java.util.UUID;
 public class NodesServiceController {
     private final NodesService delegate;
 
+    @Autowired
     public NodesServiceController(NodesService service){
         delegate = service;
     }
@@ -39,8 +42,8 @@ public class NodesServiceController {
             @ApiResponse(responseCode = "400", description = "Невалидная схема документа или входные данные не верны.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Error.class))),
             @ApiResponse(responseCode = "404", description = "Категория/товар не найден.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Error.class )))
     })
-    @GetMapping(value = "/nodes/{id}", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<ShopUnitWithChildren> nodesGet(@ApiParam(name = "Id товара/категории.") @PathVariable(name = "id") @Valid @NotBlank UUID id) throws NotFoundException {
+    @GetMapping(value = "/nodes/{id}", produces = "application/json")
+    public ResponseEntity<ShopUnitWithChildren> nodesGet(@Parameter(name = "id", description = "id товара/категории", required = true) @PathVariable("id") @Valid @NotBlank UUID id) throws NotFoundException {
         return delegate.nodesGet(id);
     }
 }
