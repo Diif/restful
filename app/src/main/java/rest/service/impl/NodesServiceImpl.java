@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import static rest.config.CustomUtilities.GET_STAT_SIZE;
+
 @Service
 public class NodesServiceImpl implements NodesService {
 
@@ -66,11 +68,11 @@ public class NodesServiceImpl implements NodesService {
         {
             responseUnit.setChildren(children);
         }
-        if(counter >= 100){
-            kafkaProducer.sendMessage(getStat);
-            counter = 0;
-            getStat.clear();
-        }
+//        if(counter >= GET_STAT_SIZE){
+//            kafkaProducer.sendMessage(getStat);
+//            counter = 0;
+//            getStat.clear();
+//        }
         return new ResponseEntity<ShopUnitWithChildren>(responseUnit, HttpStatus.OK);
     }
 }
